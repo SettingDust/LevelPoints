@@ -1,0 +1,9 @@
+name: LevelPoints
+version: 1.0
+author: SettingDust
+main: com.settingdust.levelpoints
+commands:
+  levelpoints:
+permissions:
+  levelpoints.command:
+    default: op

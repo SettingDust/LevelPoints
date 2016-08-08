@@ -1,0 +1,36 @@
+command:
+  add:
+    description: "&b添加指定属性值"
+    args:
+      name: "name"
+      type: "type"
+      points: "points"
+    message: "&a增加成功!当前为: {points}"
+  take:
+    description: "&b移除指定属性值"
+    args:
+      name: "name"
+      type: "type"
+      points: "points"
+    message: "&a移除成功!当前为: {points}"
+  error:
+    only_player: "&4此命令只可由玩家使用! "
+    only_int: "&c请输入正确数字! "
+attributes:
+  strength: "&a力量"
+  agility: "&a敏捷"
+  vitality: "&a耐力"
+  type: "&a类型"
+key:
+  damage: "伤害"
+  critChance: "暴击几率"
+  critDamage: "暴击伤害"
+  attackSpeed: "攻击速度"
+  dogedChance: "闪避几率"
+  health: "生命加成"
+  healthRegen: "生命回复"
+  free: "自由属性点"
+  attribute: "人物属性"
+levelup_message: "&a你升级了! 请输入/levelpoints points指令来使用属性点! "
+gui_title: "人物属性"
+split: "-----------"

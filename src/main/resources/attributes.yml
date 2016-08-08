@@ -1,0 +1,13 @@
+strength:
+  icon: IRON_SWORD
+  damage: 0.1
+  critChance: 1
+agility:
+  icon: FEATHER
+  critDamage: 1
+  attackSpeed: 1
+  dodgeChance: 1
+vitality:
+  icon: APPLE
+  health: 0.1
+  healthRegen: 0.1
