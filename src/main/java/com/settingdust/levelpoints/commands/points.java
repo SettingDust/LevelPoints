@@ -27,10 +27,10 @@ public class points extends BaseCommand {
     @Override
     public boolean excute(CommandSender sender, String[] args) {
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage(LanguageUtils.getString("commands.error.only_player"));
+            sender.sendMessage(LanguageUtils.getString("command.error.only_player"));
         } else {
             Player player = (Player) sender;
-            ItemStack[] items = new ItemStack[]{};
+            List<ItemStack> items = new ArrayList<ItemStack>();
             double i = 0;
             for (String type : LevelPoints.pointsUtils.getAttributes().keySet()) {
                 ItemStack item = new ItemStack(LevelPoints.pointsUtils.getAttributes().get(type).icon);
@@ -38,15 +38,16 @@ public class points extends BaseCommand {
                 List<String> lore = new ArrayList<String>();
 
                 item.setAmount(LevelPoints.pointsUtils.getAttribute(player.getName(), type));
-                lore.add(LanguageUtils.getString("attributes.type") + "：" + type);
+                lore.add(LanguageUtils.getString("attributes.type") + ": " + type);
                 for (String key : LevelPoints.pointsUtils.getAttributes().get(type).attributes.keySet()) {
-                    lore.add(LanguageUtils.getString("key." + key) + "：" +
+                    lore.add(LanguageUtils.getString("key." + key) + ": " +
                             LevelPoints.pointsUtils.getAttribute(player.getName(), type, key));
                 }
 
                 itemMeta.setLore(lore);
                 itemMeta.setDisplayName(LanguageUtils.getString("attributes." + type));
-                items[(int) i] = item;
+                item.setItemMeta(itemMeta);
+                items.add(item);
 
                 i++;
                 while (i == 7 + (9 * Math.floor(i / 9)) || i == 8 + (9 * Math.floor(i / 9))) {
@@ -54,18 +55,22 @@ public class points extends BaseCommand {
                 }
             }
 
-            items[7] = new ItemStack(Material.getMaterial(LevelPoints.plugin.getConfig().getString("free_icon")));
-            ItemMeta itemMeta = Bukkit.getItemFactory().getItemMeta(items[7].getType());
-            itemMeta.setDisplayName(LanguageUtils.getString("attributes.free") + "：" +
+            ItemStack item = new ItemStack(Material.getMaterial(LevelPoints.plugin.getConfig().getString("free_icon")));
+            ItemMeta itemMeta = Bukkit.getItemFactory().getItemMeta(item.getType());
+            itemMeta.setDisplayName(LanguageUtils.getString("key.free") + ": " +
                     LevelPoints.pointsUtils.getAttribute(player.getName(), "free"));
-            items[7].setItemMeta(itemMeta);
+            item.setItemMeta(itemMeta);
+            while (items.size() < 8) {
+                items.add(new ItemStack(Material.AIR));
+            }
+            items.set(7, item);
 
-            items[8] = new ItemStack(Material.getMaterial(LevelPoints.plugin.getConfig().getString("attribute_icon")));
-            itemMeta = Bukkit.getItemFactory().getItemMeta(items[8].getType());
+            item = new ItemStack(Material.getMaterial(LevelPoints.plugin.getConfig().getString("attribute_icon")));
+            itemMeta = Bukkit.getItemFactory().getItemMeta(item.getType());
             List<String> lore = new ArrayList<String>();
 
             for (String type : LevelPoints.pointsUtils.getAttributes().keySet()) {
-                lore.add(LanguageUtils.getString("attributes." + type) + "：" +
+                lore.add(LanguageUtils.getString("attributes." + type) + ": " +
                         LevelPoints.pointsUtils.getAttribute(player.getName(), type));
             }
 
@@ -82,12 +87,19 @@ public class points extends BaseCommand {
                 }
             }
             for (String key : values.keySet()) {
-                lore.add(LanguageUtils.getString("key." + key) + "：" + values.get(key));
+                lore.add(LanguageUtils.getString("key." + key) + ": " + values.get(key));
             }
 
-            itemMeta.setDisplayName(LanguageUtils.getString("attributes.attribute"));
+            itemMeta.setLore(lore);
+            itemMeta.setDisplayName(LanguageUtils.getString("key.attribute"));
+            item.setItemMeta(itemMeta);
+            while (items.size() < 9) {
+                items.add(new ItemStack(Material.AIR));
+            }
+            items.set(8, item);
 
             Inventory inventory = Bukkit.createInventory(player, (int) Math.ceil(i / 9) * 9, LanguageUtils.getString("gui_title"));
+            inventory.setContents(items.toArray(new ItemStack[items.size()]));
             player.openInventory(inventory);
         }
         return true;

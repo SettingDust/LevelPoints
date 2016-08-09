@@ -5,7 +5,6 @@ import com.settingdust.levelpoints.config.Config;
 import org.bukkit.Material;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,14 +21,12 @@ public class Attribute {
     public Config config = new Config("attributes.yml", LevelPoints.plugin);
 
     public Attribute(String name) {
-        this.config.load("attributes.yml");
         this.name = name;
         this.icon = Material.getMaterial(this.config.getConfig().getString(this.name + ".icon"));
         Set<String> types = this.config.getConfig().getConfigurationSection(name).getKeys(false);
-        Iterator<String> iterator = types.iterator();
-        while (iterator.hasNext()) {
-            String type = iterator.next();
-            this.attributes.put(type, this.config.getConfig().getDouble(name + "." + type));
+        for (String type : types) {
+            if (!type.equalsIgnoreCase("icon"))
+                this.attributes.put(type, this.config.getConfig().getDouble(name + "." + type));
         }
     }
 }

@@ -1,7 +1,7 @@
 name: LevelPoints
 version: 1.0
 author: SettingDust
-main: com.settingdust.levelpoints
+main: com.settingdust.levelpoints.LevelPoints
 commands:
   levelpoints:
 permissions:

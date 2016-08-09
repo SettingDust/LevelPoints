@@ -18,8 +18,11 @@ public class reload extends BaseCommand {
     @Override
     public boolean excute(CommandSender sender, String[] args) {
         LevelPoints.plugin.reloadConfig();
+        LevelPoints.plugin.getConfig().options().copyDefaults(true);
+        LevelPoints.plugin.saveConfig();
         LevelPoints.language = new LanguageUtils();
         LevelPoints.pointsUtils = new PointsUtils();
+        sender.sendMessage(LanguageUtils.getString("command.reload.message"));
         return true;
     }
 }

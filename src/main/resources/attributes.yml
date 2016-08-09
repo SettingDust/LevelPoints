@@ -1,5 +1,5 @@
 strength:
-  icon: IRON_SWORD
+  icon: REDSTONE
   damage: 0.1
   critChance: 1
 agility:

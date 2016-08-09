@@ -2,12 +2,7 @@ package com.settingdust.levelpoints.utils;
 
 import com.settingdust.levelpoints.LevelPoints;
 import com.settingdust.levelpoints.config.Config;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.configuration.MemorySection;
 
 import java.util.*;
 
@@ -23,21 +18,19 @@ public class PointsUtils {
 
     public PointsUtils() {
         Set<String> types = this.config.getConfig().getKeys(false);
-        Iterator<String> iterator = types.iterator();
-        while (iterator.hasNext()) {
-            String name = iterator.next();
-            attributes.put(name, new Attribute(name));
+        for (String type : types) {
+            attributes.put(type, new Attribute(type));
         }
-        this.config.load("data.yml");
-        this.playerAttributes = this.config.getConfig().getConfigurationSection("players").getValues(true);
+        this.config.load("data.yml", false);
+        this.playerAttributes = this.config.getConfig().getValues(true);
     }
 
     public int getAttribute(String name, String type) {
         int value = 0;
         if (playerAttributes.containsKey(name)) {
-            HashMap<String, Integer> playerAttribute = (HashMap<String, Integer>) playerAttributes.get(name);
-            if (playerAttribute.containsKey(type)) {
-                value = playerAttribute.get(type);
+            MemorySection playerAttribute = (MemorySection) playerAttributes.get(name);
+            if (playerAttribute.contains(type)) {
+                value = playerAttribute.getInt(type);
             }
         }
         return value;
@@ -46,20 +39,24 @@ public class PointsUtils {
     public double getAttribute(String name, String type, String key) {
         double value = 0;
         if (playerAttributes.containsKey(name)) {
-            HashMap<String, Integer> playerAttribute = (HashMap<String, Integer>) playerAttributes.get(name);
-            if (playerAttribute.containsKey(type)
+            MemorySection playerAttribute = (MemorySection) playerAttributes.get(name);
+            if (playerAttribute.contains(type)
                     && attributes.get(type).attributes.containsKey(key)) {
-                value = playerAttribute.get(type) * attributes.get(type).attributes.get(key);
+                value = playerAttribute.getInt(type) * attributes.get(type).attributes.get(key);
             }
         }
         return value;
     }
 
     public void setAttributes(String name, String type, int value) {
-        if (!playerAttributes.containsKey(name)) playerAttributes.put(name, new HashMap<String, Integer>());
-        HashMap<String, Integer> playerAttribute = (HashMap<String, Integer>) playerAttributes.get(name);
-        playerAttribute.put(type, value);
-        playerAttributes.put(name, playerAttribute);
+        if (!playerAttributes.containsKey(name)) {
+            this.config.getConfig().addDefault(name + "." + type, 0);
+            this.playerAttributes.put(name, this.config.getConfig().getConfigurationSection(name));
+        }
+        MemorySection playerAttribute = (MemorySection) playerAttributes.get(name);
+        playerAttribute.set(type, value);
+        this.playerAttributes.put(name, playerAttribute);
+        this.config.getConfig().set(name, playerAttribute);
     }
 
     public void addAttribute(String name, String type, int value) {

@@ -12,17 +12,21 @@ public class LanguageUtils {
     public static Config config;
 
     public LanguageUtils() {
-        config = new Config("language\\" + LevelPoints.plugin.getConfig().getString("language") + ".yml", LevelPoints.plugin);
+        config = new Config("language\\" + LevelPoints.plugin.getConfig().getString("language") + ".yml",
+                LevelPoints.plugin);
     }
 
     public static String getCommandDescription(String name) {
         if (config.getConfig().contains("command." + name + ".description"))
-            return config.getConfig().getString("command." + name + ".description").replace("&", "§");
+            return getString("command." + name + ".description");
         else
             return null;
     }
 
     public static String getString(String path) {
-        return config.getConfig().getString(path).replace("&", "§");
+        if (config.getConfig().contains(path))
+            return config.getConfig().getString(path).replace("&", "§");
+        else
+            return "";
     }
 }

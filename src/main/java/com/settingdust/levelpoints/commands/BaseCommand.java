@@ -10,11 +10,11 @@ import org.bukkit.command.CommandSender;
  */
 public class BaseCommand{
     private String[] args = null;
-    private String description = LanguageUtils.getCommandDescription(args[0]);
+    private String description = null;
 
     public BaseCommand(String[] args) {
         this.args = args;
-        this.description = description;
+        this.description = LanguageUtils.getCommandDescription(args[0]);
     }
 
     public String[] getArgs() {

@@ -21,18 +21,17 @@ public class LevelPoints extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.plugin = this;
+        this.language = new LanguageUtils();
+        this.pointsUtils = new PointsUtils();
+
         this.getLogger().info("Author: SettingDust");
         this.getLogger().info("E-mail: settingdust@gmail.com");
         this.getLogger().info("Please report bugs with e-mail. ");
         this.getServer().getPluginManager().registerEvents(new GuiHandler(), this);
         this.getCommand(command).setExecutor(new CommandHanlder(this));
         this.getConfig().options().copyDefaults(true);
-        this.reloadConfig();
         this.saveConfig();
-
-        this.plugin = this;
-        this.language = new LanguageUtils();
-        this.pointsUtils = new PointsUtils();
     }
 
     @Override

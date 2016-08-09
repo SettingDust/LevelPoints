@@ -1,6 +1,6 @@
 package com.settingdust.levelpoints.config;
 
-import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -18,7 +18,7 @@ public class Config {
     private final JavaPlugin plugin;
 
     private File configFile;
-    private YamlConfig fileConfiguration;
+    private YamlConfig fileConfiguration = new YamlConfig();
 
     /**
      * Init config
@@ -28,11 +28,20 @@ public class Config {
      */
     public Config(String fileName, JavaPlugin plugin) {
         this.plugin = plugin;
-        this.load(fileName);
+        this.load(fileName, true);
     }
 
     /**
-     *
+     * @param fileName
+     * @param plugin
+     * @param def
+     */
+    public Config(String fileName, JavaPlugin plugin, boolean def) {
+        this.plugin = plugin;
+        this.load(fileName, def);
+    }
+
+    /**
      * @param plugin
      */
     public Config(JavaPlugin plugin) {
@@ -40,28 +49,29 @@ public class Config {
     }
 
     /**
-     * Load config with name
-     *
      * @param fileName
+     * @param def
      */
-    public void load(String fileName) {
+    public void load(String fileName, boolean def) {
         this.fileName = fileName;
         this.configFile = new File(plugin.getDataFolder(), fileName);
-        this.load(configFile);
+        this.load(configFile, def);
     }
 
     /**
-     * Load config with File
-     *
      * @param configFile
+     * @param def
      */
-    public void load(File configFile) {
+    public void load(File configFile, boolean def) {
         try {
             if (!configFile.exists()) {
-                configFile.mkdirs();
+                configFile.getParentFile().mkdirs();
                 configFile.createNewFile();
-                this.plugin.saveResource(fileName, true);
-                this.load(plugin.getResource(fileName));
+                if (def)
+                    this.load(plugin.getResource(configFile.getName()));
+                else
+                    this.load(new FileInputStream(configFile));
+                this.saveConfig();
             } else
                 this.load(new FileInputStream(configFile));
         } catch (IOException e) {
@@ -76,13 +86,7 @@ public class Config {
      */
     @Deprecated
     public void load(InputStream inputStream) {
-        try {
-            this.fileConfiguration.load(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
+        this.fileConfiguration = YamlConfig.loadConfiguration(inputStream);
     }
 
     /**
@@ -107,10 +111,10 @@ public class Config {
      * Reload config
      */
     public void reloadConfig() {
-        this.load(fileName);
+        this.load(configFile, true);
     }
 
-    public void saveConfig(){
+    public void saveConfig() {
         try {
             this.fileConfiguration.save(configFile);
         } catch (IOException e) {
